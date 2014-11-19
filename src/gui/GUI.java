@@ -1,3 +1,5 @@
+package gui;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -10,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+import Program.Config;
+import Program.World;
 
 public class GUI extends JFrame{
 	
@@ -22,7 +26,7 @@ public class GUI extends JFrame{
 	static int STEP = 2;
 	
 	
-	GUI(int hor, int ver, Config c)
+	public GUI(int hor, int ver, Config c)
 	{
 		this.c = c;
 		buttonPanel = new ButtonPanel();

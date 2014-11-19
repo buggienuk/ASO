@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +17,11 @@ public class ButtonPanel extends JPanel{
 	 * TODO: Stop, Restart buttons toevoegen!
 	 */
 	ButtonPanel()
+	{
+		createButtonsAndAlignments();
+	}
+	
+	private void createButtonsAndAlignments()
 	{
 		playImage  = new ImageIcon("images/play.png");
 		pauseImage = new ImageIcon("images/pause.png");

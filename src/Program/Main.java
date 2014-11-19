@@ -1,3 +1,6 @@
+package Program;
+import gui.GUI;
+
 import javax.swing.JFrame;
 
 

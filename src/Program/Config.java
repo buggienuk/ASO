@@ -1,3 +1,4 @@
+package Program;
 import java.io.File;
 import java.util.Scanner;
 
@@ -9,7 +10,9 @@ public class Config {
 	// settings for the model
 	int numGroups;
 	int percentageFilled;
-	int horNumAgents, verNumAgents;
+	public int horNumAgents;
+
+	public int verNumAgents;
 	boolean nurture;
 	boolean aseksual;
 	int basePTR;
