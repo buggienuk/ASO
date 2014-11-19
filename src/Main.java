@@ -14,7 +14,7 @@ public class Main extends JFrame {
 	{
 		currentCount = 0;
 		
-		gui = new GUI(SCREEN_HOR, SCREEN_VER);
+		
 		// no args, default settings:
 		if(args.length == 0)
 		{ 
@@ -24,6 +24,8 @@ public class Main extends JFrame {
 			c = new Config(args[0]);		
 		}
 		
+		gui = new GUI(SCREEN_HOR, SCREEN_VER,c);
+	
 		w = new World(c);
 	}
 	

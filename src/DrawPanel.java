@@ -1,13 +1,22 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+
+import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 
 public class DrawPanel extends JPanel{
 	private void doDrawing(Graphics g, World world) throws Exception {
         Graphics2D g2d = (Graphics2D) g;
-       
-        for(int i = 0; i < 50; i++)
+        drawWorld(g2d, world);
+    }
+
+
+	private void drawWorld(Graphics2D g2d, World world) throws Exception
+	{
+		for(int i = 0; i < 50; i++)
         {
         	for(int j = 0; j < 50; j++)
         	{
@@ -20,10 +29,9 @@ public class DrawPanel extends JPanel{
         		}
         	}
         }
-    }
-
+	}
+	
     public void paintComponent(Graphics g, World world) {
-        
         super.paintComponent(g);
         try {
 			doDrawing(g, world);
