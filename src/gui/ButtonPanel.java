@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,6 +12,7 @@ import javax.swing.JToggleButton;
 public class ButtonPanel extends JPanel{
 	JToggleButton play, pause, step;
 	ImageIcon playImage, pauseImage, stepImage;
+	ButtonGroup group;
 	static int NUM_BUTTONS = 3;
 	
 	/**
@@ -18,6 +20,7 @@ public class ButtonPanel extends JPanel{
 	 */
 	ButtonPanel()
 	{
+		group = new ButtonGroup();
 		createButtonsAndAlignments();
 	}
 	
@@ -35,6 +38,10 @@ public class ButtonPanel extends JPanel{
 		pause.setHorizontalAlignment(AbstractButton.LEADING);
 		step.setVerticalTextPosition(AbstractButton.CENTER);
 		step.setHorizontalAlignment(AbstractButton.LEADING);
+		
+		group.add(play);
+		group.add(pause);
+		group.add(step);
 	}
 	
 	public void drawButtons(JFrame f)

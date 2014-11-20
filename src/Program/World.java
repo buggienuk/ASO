@@ -11,7 +11,8 @@ public class World {
 	Color[] groupColors;
 	static int SQUARE_SIZE = 10;
 	Config c;
-	boolean paused;
+	public boolean paused;
+	public boolean step;
 	
 	public void doIteration()
 	{

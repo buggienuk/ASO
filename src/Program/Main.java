@@ -36,7 +36,11 @@ public class Main extends JFrame {
 	{
 		while(true)
 		{
-			while(w.paused()) { Thread.sleep(500); }
+			gui.updateInputTo(w);
+			while(w.paused()) { 
+				Thread.sleep(500);
+				gui.updateInputTo(w);
+			}
 			w.doIteration();
 			
 			// update every 50 iterations

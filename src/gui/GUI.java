@@ -56,9 +56,30 @@ public class GUI extends JFrame{
         this.setVisible(true);
     }
 	
-	public void checkInput()
+	public void updateInputTo(World w)
 	{
-		boolean[] result = buttonPanel.getButtonStates();
+		/**
+		 * GAAT NOG MIS HIER!!!!
+		 * nu gebruik ik de 'oude' states (namelijk van voor het aanpassen...)
+		 * kijken of de pause of step knop gewijzigd is oid ... dit even refactoren!!
+		 */
+		
+		boolean[] b = buttonPanel.getButtonStates();
+
+		if(b[GUI.PLAY])
+		{
+			w.paused = false;
+		}
+		
+		if(b[GUI.PAUSE])
+		{
+			w.paused = true;
+		}
+		
+		if(b[GUI.STEP])
+		{
+			w.step = true;
+		}
 	}
 
 	public void setButtonState(int button, boolean state)
