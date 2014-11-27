@@ -27,6 +27,23 @@ public class Config {
 		defaultSettings();
 	}
 	
+	// clone it, this way the world only works on the config file it received when the world was created. 
+	public Config clone()
+	{
+		Config c = new Config();
+		c.numGroups = this.numGroups;
+		c.percentageFilled = this.percentageFilled;
+		c.horNumAgents = this.horNumAgents;
+		c.verNumAgents = this.verNumAgents;
+		c.nurture = this.nurture;
+		c.aseksual = this.aseksual;
+		c.basePTR = this.basePTR;
+		c.updateEvery = this.updateEvery;
+		c.sleepTime = this.sleepTime;
+		
+		return c;
+	}
+	
 	private void defaultSettings()
 	{
 		numGroups = 4;

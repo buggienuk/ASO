@@ -48,6 +48,7 @@ public class ButtonPanel extends JPanel{
 		group.add(pause);
 		group.add(step);
 		group.add(reset);
+		pause.setSelected(true);
 	}
 	
 	public void drawButtons()
@@ -91,6 +92,24 @@ public class ButtonPanel extends JPanel{
 			return step;
 		}
 		return null;
+	}
+
+	public boolean reset() {
+		if( reset.isSelected() )
+		{
+			pause.setSelected(true);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean step() {
+		if( step.isSelected() )
+		{
+			pause.setSelected(true);
+			return true;
+		}
+		return false;
 	}
 	
 }

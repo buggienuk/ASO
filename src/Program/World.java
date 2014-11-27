@@ -24,7 +24,7 @@ public class World {
 		this.c = c; 
 		initColors(c.numGroups);
 		initWorld(c);
-		paused = false;
+		paused = true;
 	}
 	
 	private void initColors(int numGroups)

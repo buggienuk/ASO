@@ -32,6 +32,11 @@ public class ValuePanel extends JPanel{
         buttonPanel.drawButtons();
 	}
 	
+	public boolean reset()
+	{
+		return buttonPanel.reset();
+	}
+	
 	public Config update(Config c)
 	{
 		//buttonpanel doesnt need an update.. i think ... 
@@ -40,5 +45,9 @@ public class ValuePanel extends JPanel{
 		c = sliders.updateConfig(c);
 		
 		return c;
+	}
+
+	public boolean step() {
+		return buttonPanel.step();
 	}
 }

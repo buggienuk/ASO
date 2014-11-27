@@ -41,8 +41,14 @@ public class GUI extends JFrame{
 	
 	public Config update(World w)
 	{
+		w.paused = vpnl.buttonPanel.getButtonStates()[GUI.PAUSE];
 		c = vpnl.update(c);
 		return c;
+	}
+	
+	public boolean reset()
+	{
+		return vpnl.reset();
 	}
 	
 	public final void initUI(int hor, int ver) {
@@ -58,6 +64,10 @@ public class GUI extends JFrame{
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+	}
+
+	public boolean step() {
+		return vpnl.step();
 	}
 	
 }
