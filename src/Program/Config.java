@@ -8,18 +8,18 @@ public class Config {
 	String configFileLocation;
 	
 	// settings for the model
-	int numGroups;
-	int percentageFilled;
+	public int numGroups;
+	public int percentageFilled;
 	public int horNumAgents;
 
 	public int verNumAgents;
-	boolean nurture;
-	boolean aseksual;
-	int basePTR;
+	public boolean nurture;
+	public boolean aseksual;
+	public int basePTR;
 	
 	// program settings
-	int updateEvery;
-	int sleepTime; // in milliseconds
+	public int updateEvery;
+	public int sleepTime; // in milliseconds
 	
 	// use base settings (not recommended)
 	Config()

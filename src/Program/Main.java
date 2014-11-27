@@ -16,8 +16,7 @@ public class Main extends JFrame {
 	Main(String[] args)
 	{
 		currentCount = 0;
-		
-		
+				
 		// no args, default settings:
 		if(args.length == 0)
 		{ 
@@ -36,15 +35,17 @@ public class Main extends JFrame {
 	{
 		while(true)
 		{
-			gui.updateInputTo(w);
+			c = gui.update(w);
 			while(w.paused()) { 
-				Thread.sleep(500);
-				gui.updateInputTo(w);
+				Thread.sleep(c.sleepTime);
+				c = gui.update(w);
+				System.out.println("paused!");
 			}
-			w.doIteration();
+			//w.doIteration();
+			w.generateNew();
 			
 			// update every 50 iterations
-			if(currentCount == c.updateEvery)
+			if(currentCount == c.updateEvery || currentCount > c.updateEvery)
 			{
 				gui.updateGraphics(w);
 				currentCount = 0;

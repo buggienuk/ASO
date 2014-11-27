@@ -18,26 +18,31 @@ import Program.World;
 public class GUI extends JFrame{
 	
 	Config c;
-	ButtonPanel buttonPanel;
 	DrawPanel dpnl;
+	ValuePanel vpnl;
 	
 	static int PAUSE = 0;
 	static int PLAY = 1;
 	static int STEP = 2;
+	static int RESET = 3;
 	
 	
 	public GUI(int hor, int ver, Config c)
 	{
 		this.c = c;
-		buttonPanel = new ButtonPanel();
-		buttonPanel.setSize(200, 100);
-		initUI(hor, ver);
-		
+		vpnl = new ValuePanel(c);
+		initUI(hor, ver);	
 	}
 	
 	public void updateGraphics(World w)
 	{
 		dpnl.paintComponent(dpnl.getGraphics(), w);
+	}
+	
+	public Config update(World w)
+	{
+		c = vpnl.update(c);
+		return c;
 	}
 	
 	public final void initUI(int hor, int ver) {
@@ -46,50 +51,13 @@ public class GUI extends JFrame{
         
         this.setLayout(new GridLayout(1,2));
         add(dpnl);
-        add(buttonPanel);
-        buttonPanel.drawButtons(this);
+        add(vpnl);
 
         setSize(800, 500);
         setTitle("Iterated Prisoners Dilemma");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-    }
-	
-	public void updateInputTo(World w)
-	{
-		/**
-		 * GAAT NOG MIS HIER!!!!
-		 * nu gebruik ik de 'oude' states (namelijk van voor het aanpassen...)
-		 * kijken of de pause of step knop gewijzigd is oid ... dit even refactoren!!
-		 */
-		
-		boolean[] b = buttonPanel.getButtonStates();
-
-		if(b[GUI.PLAY])
-		{
-			w.paused = false;
-		}
-		
-		if(b[GUI.PAUSE])
-		{
-			w.paused = true;
-		}
-		
-		if(b[GUI.STEP])
-		{
-			w.step = true;
-		}
-	}
-
-	public void setButtonState(int button, boolean state)
-	{
-		buttonPanel.setButton(button, state);
-	}
-	
-	public void setVisibility( int button, boolean visible)
-	{
-		buttonPanel.setVisibility(button, visible);
 	}
 	
 }

@@ -2,10 +2,6 @@ package gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
-import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import Program.World;
