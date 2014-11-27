@@ -2,6 +2,7 @@ package Program;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
+import java.util.Random;
 
 
 public class Human {
@@ -13,6 +14,27 @@ public class Human {
 	boolean aseksual;
 	int group;
 	int PTR;	// in integers, e.g. 13% is value 13.
+	Random ran;
+	boolean[] helped;
+	
+	public void reset()
+	{
+		helped = new boolean[4];
+	}
+	
+	public void iterate(Human[] neighbors) {
+		// talk with neighbors, update temp PTR based accordingly
+		int tempPTR = this.PTR;
+		
+		// prisoners dilemma the west, north, east and south neighbors. 
+	}
+	
+	public void prisonersDilemma(int neighborLocation, Human neighbor)
+	{
+		helped[(neighborLocation+2) %4] = true; 
+		
+		// do something with the neighbor. 
+	}
 	
 	
 	Human(Rectangle r, Ellipse2D c, Color col_r, Color col_c, int group, int PTR, boolean nurture, boolean aseksual)
@@ -26,6 +48,8 @@ public class Human {
 		this.PTR = PTR;
 		this.nurture = nurture;
 		this.aseksual = aseksual;
+		
+		ran = new Random();
 	}
 	
 	Human(Rectangle r, Ellipse2D c, Color col_r)
@@ -34,6 +58,8 @@ public class Human {
 		this.r = r;
 		this.c = c;
 		this.col_r = col_r;
+		
+		ran = new Random();
 	}
 	
 	
@@ -67,4 +93,14 @@ public class Human {
 	{
 		return this.alive;
 	}
+
+	public boolean die() {
+		if(ran.nextInt(10) == 0)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	
 }

@@ -13,10 +13,66 @@ public class World {
 	Config c;
 	public boolean paused;
 	public boolean step;
+	static int WEST = 0, NORTH = 1, EAST = 2, SOUTH = 3;
 	
 	public void doIteration()
 	{
-		// do iterations here. 
+		// for each human
+		Human[] neighbors;
+		for(int i = 0; i < c.horNumAgents; i++)
+		{
+			for(int j = 0; i < c.verNumAgents; i++)
+			{
+				if(world[i][j].alive){
+					if(world[i][j].die())
+					{
+						// human has died, update the world accordingly!!
+						
+						
+					} else {
+						// human lives to breed another day.
+						neighbors = getNeighbors(i,j);
+					
+						world[i][j].iterate(neighbors);
+				
+					}
+				}
+			}
+		}
+	}
+	
+	private Human[] getNeighbors(int x, int y)
+	{
+		// we go in a clock-wise direction in the array, e.g. left, up, right, down neighbors.
+		Human[] result = new Human[4];
+		result[EAST] = getNeighbor(x-1,y);
+		result[NORTH] = getNeighbor(x,y-1);
+		result[SOUTH] = getNeighbor(x+1,y);
+		result[WEST] = getNeighbor(x,y+1);
+		
+		return null;
+	}
+	
+	private Human getNeighbor(int x, int y)
+	{
+		if( x > c.horNumAgents -1)
+		{
+			x = 0;
+		}
+		if(x < 0)
+		{
+			x = c.horNumAgents -1;
+		}
+		if( y > c.verNumAgents -1)
+		{
+			y = 0;
+		}
+		if(y < 0)
+		{
+			y = c.verNumAgents -1;
+		}
+		
+		return world[x][y];
 	}
 	
 	World(Config c)
