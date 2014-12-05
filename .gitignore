@@ -4,6 +4,10 @@
 .settings/org.eclipse.jdt.core.prefs
 
 *.class
-
+.metadata/*
 *.swp
 *.lock
+
+*.prefs
+
+*.xml
