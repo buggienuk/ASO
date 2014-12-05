@@ -3,8 +3,6 @@ import gui.GUI;
 
 import javax.swing.JFrame;
 
-// Test
-
 
 public class Main extends JFrame {
 	World w;
@@ -37,10 +35,12 @@ public class Main extends JFrame {
 	}
 	
 	public void start() throws InterruptedException
-	{
+	{	int count = 0;
 		while(true)
 		{
-			step();		
+			step();	
+			count += 1;
+			System.out.println(count);
 		}
 	}
 	
@@ -48,12 +48,16 @@ public class Main extends JFrame {
 	{
 		update();
 		checkPaused();
-		iteration();
+		if (currentCount == 0){
+			initializeWorld();
+		}else{
+			w.doIteration();
+		}
 		updateGraphics();
 	}
 	
-	private void iteration()
-	{
+	private void initializeWorld()
+	{	
 		w.generateNew();
 	}
 	

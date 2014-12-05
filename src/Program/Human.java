@@ -2,6 +2,7 @@ package Program;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -22,10 +23,59 @@ public class Human {
 		helped = new boolean[4];
 	}
 	
+	public Human breed(Human[] neighbors){
+		int p = ran.nextInt(100);
+		int idx = ran.nextInt(neighbors.length);
+		Human partner = neighbors[idx];
+		
+		if (p < PTR){ //reproduce or not, select partner randomly
+			if (partner == null){// TODO: taking care of out of bounds neighbours
+				return null;
+			}
+		}
+		
+		//create child, inherits from this parent..
+		Ellipse2D c = this.c;
+		Color col_r = this.col_r;
+		Color col_c = this.col_c;
+		int group = this.group;
+		int PTR = this.PTR;
+		boolean nurture = this.nurture;
+		boolean aseksual = this.aseksual;
+		
+		
+		//or from partner/randomly selected neighbor..
+		if (!ran.nextBoolean()){c = partner.circle();}
+		if (!ran.nextBoolean()){col_r = partner.colRect();}
+		if (!ran.nextBoolean()){col_c = partner.colCircle();}
+		if (!ran.nextBoolean()){group = partner.getGroup();}
+		if (!ran.nextBoolean()){PTR = partner.getPTR();}
+		if (!ran.nextBoolean()){nurture = partner.getNurture();}
+		if (!ran.nextBoolean()){aseksual = partner.getAseksual();}
+		
+		// TODO: random mutations
+
+		Human child = new Human(r, c, col_r, col_c, group, PTR, nurture, aseksual);
+		return child;
+	}
+	
 	public void iterate(Human[] neighbors) {
 		// talk with neighbors, update temp PTR based accordingly
 		int tempPTR = this.PTR;
 		
+		for (int i=0; i<neighbors.length; i++){
+			//TODO: implements strategies
+			if (this.group != neighbors[i].getGroup()){// humans of dissimilar groups do not cooporate
+
+				tempPTR -= 1;
+				
+			}else{
+				tempPTR += 3;
+			}
+		}
+		
+		// TODO: PTR should get updated at the end of each iteration
+		PTR = tempPTR;
 		// prisoners dilemma the west, north, east and south neighbors. 
 	}
 	
@@ -62,9 +112,23 @@ public class Human {
 		ran = new Random();
 	}
 	
+	public boolean getNurture(){
+		return nurture;
+	}
 	
+	public boolean getAseksual(){
+		return aseksual;
+	}
 	
+	public int getPTR()
+	{
+		return PTR;
+	}
 	
+	public int getGroup()
+	{
+		return group;
+	}
 	
 	/**
 	 * Below are basic getters, they can be ignored for the most parts when adding to the code.

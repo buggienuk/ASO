@@ -28,13 +28,12 @@ public class World {
 					{
 						// human has died, update the world accordingly!!
 						
-						
 					} else {
 						// human lives to breed another day.
 						neighbors = getNeighbors(i,j);
-					
 						world[i][j].iterate(neighbors);
-				
+						Human child = world[i][j].breed(neighbors);
+						// TODO: what to do with the child?
 					}
 				}
 			}
@@ -50,7 +49,8 @@ public class World {
 		result[SOUTH] = getNeighbor(x+1,y);
 		result[WEST] = getNeighbor(x,y+1);
 		
-		return null;
+		// TODO: remove out of bounds neighbors
+		return result;
 	}
 	
 	private Human getNeighbor(int x, int y)
