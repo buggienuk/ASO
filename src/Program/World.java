@@ -27,6 +27,11 @@ public class World {
 					if(world[i][j].die())
 					{
 						// human has died, update the world accordingly!!
+						Rectangle r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+						Ellipse2D e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
+						
+						world[i][j] = new Human(r, e, groupColors[c.numGroups]);
+						
 						
 					} else {
 						// human lives to breed another day.
@@ -34,6 +39,9 @@ public class World {
 						world[i][j].iterate(neighbors);
 						Human child = world[i][j].breed(neighbors);
 						// TODO: what to do with the child?
+						
+						findEmptySpot(child);
+					
 					}
 				}
 			}
@@ -59,7 +67,7 @@ public class World {
 		{
 			x = 0;
 		}
-		if(x < 0)
+		if(x < 0) 
 		{
 			x = c.horNumAgents -1;
 		}
@@ -67,7 +75,7 @@ public class World {
 		{
 			y = 0;
 		}
-		if(y < 0)
+		if(y < 0) 
 		{
 			y = c.verNumAgents -1;
 		}
@@ -128,6 +136,8 @@ public class World {
 		}
 	}
 	
+
+	
 	
 	public Human get(int i, int j)
 	{
@@ -165,5 +175,22 @@ public class World {
         		}
     		}
     	}
+    }
+	
+	
+	public void findEmptySpot(Human child2)
+    {
+		int n;
+		int m;
+    	Random rand1 = new Random();
+    	Random rand2 = new Random();
+    	do 
+    	{
+    		n = rand1.nextInt(c.horNumAgents);
+    		m = rand2.nextInt(c.verNumAgents);
+    	
+    	} while(world[n][m].alive); //c.percentagefilled != 100) 
+    	world[n][m] = child2;
+    		
     }
 }

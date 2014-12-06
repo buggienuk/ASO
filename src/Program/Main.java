@@ -36,11 +36,13 @@ public class Main extends JFrame {
 	
 	public void start() throws InterruptedException
 	{	int count = 0;
-		while(true)
+		while(true) // World not full
 		{
 			step();	
 			count += 1;
 			System.out.println(count);
+			
+			
 		}
 	}
 	

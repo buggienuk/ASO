@@ -47,14 +47,14 @@ public class Config {
 	private void defaultSettings()
 	{
 		numGroups = 4;
-		percentageFilled = 25;
+		percentageFilled = 1;
 		horNumAgents = 50;
 		verNumAgents = 50;
 		nurture = false;
 		aseksual = false;
 		basePTR = 13;
 		
-		updateEvery = 50;
+		updateEvery = 1;
 		sleepTime = 50;
 	}
 	
