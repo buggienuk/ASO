@@ -13,6 +13,44 @@ public class Main extends JFrame {
 	int currentCount;
 	boolean step;
 	
+	public void start() throws InterruptedException
+	{
+		while(true) // World not full
+		{
+			step();	
+		}
+	}
+	
+	private void step() throws InterruptedException
+	{
+		update();
+		checkPaused();
+		w.iteration();
+		updateGraphics();
+	}
+	
+	private void update() throws InterruptedException
+	{
+		Thread.sleep(c.sleepTime);
+		c = gui.update(w);
+		
+		// check if we're reset, if yes, create a new world and draw it. 
+		if(gui.reset())
+		{
+			w = new World(c.clone());
+			gui.updateGraphics(w);
+		}
+		if(gui.step())
+		{
+			step = true;
+		}
+	}
+	
+	
+	
+	
+	
+	
 	
 	Main(String[] args)
 	{
@@ -34,29 +72,7 @@ public class Main extends JFrame {
 		gui.updateGraphics(w);
 	}
 	
-	public void start() throws InterruptedException
-	{	int count = 0;
-		while(true) // World not full
-		{
-			step();	
-			count += 1;
-			System.out.println(count);
-			
-			
-		}
-	}
 	
-	private void step() throws InterruptedException
-	{
-		update();
-		checkPaused();
-		if (currentCount == 0){
-			initializeWorld();
-		}else{
-			w.doIteration();
-		}
-		updateGraphics();
-	}
 	
 	private void initializeWorld()
 	{	
@@ -73,23 +89,7 @@ public class Main extends JFrame {
 		} else { currentCount++; }
 	}
 	
-	private void update() throws InterruptedException
-	{
-		Thread.sleep(c.sleepTime);
-		c = gui.update(w);
-		
-		// check if we're reset, if yes, create a new world and draw it. 
-		if(gui.reset())
-		{
-			w = new World(c.clone());
-			gui.updateGraphics(w);
-		}
-		if(gui.step())
-		{
-			step = true;
-		}
-		
-	}
+	
 	
 	private void checkPaused() throws InterruptedException
 	{

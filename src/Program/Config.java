@@ -17,6 +17,8 @@ public class Config {
 	public boolean aseksual;
 	public int basePTR;
 	
+	public int deathChance;
+	
 	// program settings
 	public int updateEvery;
 	public int sleepTime; // in milliseconds
@@ -52,10 +54,11 @@ public class Config {
 		verNumAgents = 50;
 		nurture = false;
 		aseksual = false;
-		basePTR = 13;
+		basePTR = 12;
 		
 		updateEvery = 1;
 		sleepTime = 50;
+		deathChance = 10;
 	}
 	
 	// read from file
@@ -131,6 +134,11 @@ public class Config {
 		if(name.equals("sleepTime"))
 		{
 			this.sleepTime = line.nextInt();
+			return;
+		}
+		if(name.equals("deathChance"))
+		{
+			this.deathChance = line.nextInt();
 			return;
 		}
 	}

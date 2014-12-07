@@ -9,6 +9,7 @@ import java.util.Random;
 public class Human {
 	Rectangle r;
 	Ellipse2D c;
+	int x,y;
 	Color col_r, col_c;
 	boolean alive;
 	boolean nurture;
@@ -17,10 +18,23 @@ public class Human {
 	int PTR;	// in integers, e.g. 13% is value 13.
 	Random ran;
 	boolean[] helped;
+	boolean strategyOwnColor;
+	boolean strategyOtherColor;
+	
+	boolean DEFECT = true, COOPERATE = false;
 	
 	public void reset()
 	{
 		helped = new boolean[4];
+	}
+	
+	
+	public Human breedAseksual(Human[] neighbors)
+	{
+		int p = ran.nextInt(100);
+		
+		
+		return null;
 	}
 	
 	public Human breed(Human[] neighbors){
@@ -100,6 +114,14 @@ public class Human {
 		this.aseksual = aseksual;
 		
 		ran = new Random();
+		
+		this.strategyOtherColor = ran.nextBoolean();
+		this.strategyOwnColor = ran.nextBoolean();
+	}
+	
+	Human(Human h)
+	{
+		// copy this shit. aseksual reproduction
 	}
 	
 	Human(Rectangle r, Ellipse2D c, Color col_r)

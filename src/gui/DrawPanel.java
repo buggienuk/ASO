@@ -2,17 +2,21 @@ package gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.Random;
+
 import javax.swing.JPanel;
 
 import Program.World;
 
 
 public class DrawPanel extends JPanel{
+	private static final long serialVersionUID = 3688058972657195248L;
+
 	private void doDrawing(Graphics g, World world) throws Exception {
         Graphics2D g2d = (Graphics2D) g;
         drawWorld(g2d, world);
     }
-
 
 	private void drawWorld(Graphics2D g2d, World world) throws Exception
 	{
@@ -24,11 +28,13 @@ public class DrawPanel extends JPanel{
         		g2d.setColor(world.get(i,j).colRect());
         		g2d.fill(world.get(i,j).rect());
         		if(world.get(i,j).alive()){
+        			System.out.printf("alive: %d %d - %b\n", i,j,world.get(i,j).alive());
         			g2d.setColor(world.get(i,j).colCircle());
         			g2d.draw(world.get(i,j).circle());
         		}
         	}
         }
+		System.out.println(new Random().nextInt(100));
 	}
 	
     public void paintComponent(Graphics g, World world) {
