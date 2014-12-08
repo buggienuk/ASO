@@ -52,7 +52,7 @@ public class World {
 			if(emptySpot == null) { continue; }
 			
 			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
-			Human child = new Human(parent);
+			Human child = new Human(parent, emptySpot, c, groupColors);
 			
 			// place him on the empty spot location, and we're done, for a single iteration. 
 			world[emptySpot.x][emptySpot.y] = child;
@@ -72,6 +72,12 @@ public class World {
 			{
 				pos_x = (start_x + i) < 2 ? (x + start_x + i) : x-1;
 				pos_y = (start_y + j) < 2 ? (y + start_y + j) : y-1;
+				if(pos_x < 0) { pos_x = c.horNumAgents-1; }
+				else if(pos_x == c.horNumAgents){ pos_x = 0; }
+				
+				if(pos_y < 0) { pos_y = c.verNumAgents-1; }
+				else if(pos_y == c.verNumAgents){ pos_y = 0; }
+				
 				if(!world[pos_x][pos_y].alive())
 				{
 					world[pos_x][pos_y].x = pos_x;

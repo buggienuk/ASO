@@ -118,9 +118,50 @@ public class Human {
 		this.strategyOtherColor = ran.nextBoolean();
 		this.strategyOwnColor = ran.nextBoolean();
 	}
-	
-	Human(Human h)
+
+	Human(Human h, Human old, Config c, Color[] cs)
 	{
+		ran = new Random();
+		// non mutable stuff:
+		this.r = old.r;
+		this.c = old.c;
+		this.x = old.x;
+		this.y = old.y;
+		this.alive = true;
+		this.nurture = h.nurture;
+		this.aseksual = h.aseksual;
+		this.PTR = h.PTR;
+		this.helped = new boolean[4];
+		
+		
+		// there is a 0,5% mutation chance.
+		int chance = ran.nextInt(1000);
+		// mutation
+		if(chance > 5) { 
+			this.group = h.group;	
+			this.col_r = h.col_r;
+		}
+		else {
+			this.group = ran.nextInt(c.numGroups);
+			this.col_r = cs[this.group];
+		} 
+		
+		chance = ran.nextInt(1000);
+		if(chance > 5)
+		{
+			this.strategyOtherColor = h.strategyOtherColor;
+		} else {
+			this.strategyOtherColor = ran.nextBoolean();
+		}
+		
+		chance = ran.nextInt(1000);
+		if(chance > 5)
+		{
+			this.strategyOwnColor = h.strategyOwnColor;
+		} else {
+			this.strategyOwnColor = ran.nextBoolean();
+		}
+		
 		// copy this shit. aseksual reproduction
 	}
 	
