@@ -28,13 +28,11 @@ public class DrawPanel extends JPanel{
         		g2d.setColor(world.get(i,j).colRect());
         		g2d.fill(world.get(i,j).rect());
         		if(world.get(i,j).alive()){
-        			System.out.printf("alive: %d %d - %b\n", i,j,world.get(i,j).alive());
         			g2d.setColor(world.get(i,j).colCircle());
         			g2d.draw(world.get(i,j).circle());
         		}
         	}
         }
-		System.out.println(new Random().nextInt(100));
 	}
 	
     public void paintComponent(Graphics g, World world) {

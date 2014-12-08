@@ -113,6 +113,8 @@ public class Human {
 		this.nurture = nurture;
 		this.aseksual = aseksual;
 		
+		this.helped = new boolean[4];
+		
 		ran = new Random();
 		
 		this.strategyOtherColor = ran.nextBoolean();

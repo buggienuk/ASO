@@ -11,13 +11,16 @@ public class Main extends JFrame {
 	final int SCREEN_VER = 600;
 	Config c;
 	int currentCount;
+	int currentIteration;
 	boolean step;
 	
 	public void start() throws InterruptedException
 	{
 		while(true) // World not full
 		{
+			System.out.printf("Iteration %d\n", currentIteration);
 			step();	
+			currentIteration++;
 		}
 	}
 	
@@ -37,6 +40,7 @@ public class Main extends JFrame {
 		// check if we're reset, if yes, create a new world and draw it. 
 		if(gui.reset())
 		{
+			currentIteration = 0;
 			w = new World(c.clone());
 			gui.updateGraphics(w);
 		}
@@ -47,15 +51,11 @@ public class Main extends JFrame {
 	}
 	
 	
-	
-	
-	
-	
-	
 	Main(String[] args)
 	{
 		currentCount = 0;
-				
+		currentIteration = 0;
+		
 		// no args, default settings:
 		if(args.length == 0)
 		{ 

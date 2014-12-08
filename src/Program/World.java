@@ -24,8 +24,8 @@ public class World {
 	public void iteration()
 	{
 		immigration();		// works.
-		//interaction(); // not yet finished
-		reproduction();
+		interaction(); 		// maybe works? have to test
+		reproduction();		// works.
 		death();			// works.
 
 		// this isn't defined in the paper, but this way its easy to change the ptr and interaction flags.
@@ -110,10 +110,61 @@ public class World {
 					/**
 					 * blue placeholder for todo-ness
 					 */
-
+					performDilemma(world[i][j], neighbors[k]);
 				}
 			}
 		}
+	}
+	
+	private void performDilemma(Human h1, Human h2)
+	{
+		boolean h1_to_h2_action; // true = cooperate, false = defect
+		boolean h2_to_h1_action; // true = cooperate, false = defect
+		
+		// are they the same group?
+		boolean sameGroup = h1.group == h2.group;
+		
+		// do we help our own and is the other one of us? yes, help him
+		if(h1.strategyOwnColor && sameGroup)
+		{
+			h1_to_h2_action = true;
+		// else, are we a cheater and help other groups? yes, help him 
+		} else if(h1.strategyOtherColor && !sameGroup)
+		{
+			h1_to_h2_action = true;
+		// none of the above cases hold, we will not help him.
+		} else {
+			h1_to_h2_action = false;
+		}
+		
+		// same, other way around.
+		if(h2.strategyOwnColor && sameGroup)
+		{
+			h2_to_h1_action = true; 
+		} else if(h2.strategyOtherColor && !sameGroup)
+		{
+			h2_to_h1_action = true;
+		} else {
+			h2_to_h1_action = false;
+		}
+		
+		
+		// now update the PTR states:
+		
+		// h1 helps the other, subtract 1% from h1 and add 3% to the h2
+		if(h1_to_h2_action) 
+		{
+			h1.PTR--;
+			h2.PTR += 3;
+		}
+		// other way around
+		if(h2_to_h1_action)
+		{
+			h2.PTR--;
+			h1.PTR += 3;
+		}
+		
+		// and we're done here!
 	}
 
 
@@ -147,7 +198,6 @@ public class World {
 				if(world[i][j].alive){
 					if(world[i][j].die())
 					{
-						System.out.println("die!");
 						// human has died, update the world accordingly!!
 						Rectangle r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 						Ellipse2D e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
@@ -156,8 +206,6 @@ public class World {
 
 
 					} else {
-						System.out.println("trie breed");
-
 						// human lives to breed another day.
 						neighbors = getNeighbors(i,j);
 						world[i][j].iterate(neighbors);
