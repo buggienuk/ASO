@@ -13,7 +13,7 @@ public class Human {
 	Color col_r, col_c;
 	boolean alive;
 	boolean nurture;
-	boolean aseksual;
+	boolean gender;
 	int group;
 	int PTR;	// in integers, e.g. 13% is value 13.
 	Random ran;
@@ -29,48 +29,36 @@ public class Human {
 	}
 	
 	
-	public Human breedAseksual(Human[] neighbors)
+	public Human breedAseksual(Human emptySpot, Config c, Color[] groupColors)
 	{
-		int p = ran.nextInt(100);
-		
-		
-		return null;
+		Human child = new Human(this, emptySpot, c, groupColors);
+		return child;
 	}
 	
 	public Human breed(Human[] neighbors){
 		int p = ran.nextInt(100);
 		int idx = ran.nextInt(neighbors.length);
 		Human partner = neighbors[idx];
+		//Human child = new Human(r, c, col_r, col_c, group, PTR, nurture, gender);
 		
-		if (p < PTR){ //reproduce or not, select partner randomly
-			if (partner == null){// TODO: taking care of out of bounds neighbours
-				return null;
+		
+		return null;
+	}
+	
+	public void nurture(Human[] neighbors) {
+		ArrayList<Human> actualNeighbors = new ArrayList<Human>();
+		for (int i=0; i<neighbors.length; i++){
+			if (neighbors[i].alive()){
+				actualNeighbors.add(neighbors[i]); 
 			}
 		}
-		
-		//create child, inherits from this parent..
-		Ellipse2D c = this.c;
-		Color col_r = this.col_r;
-		Color col_c = this.col_c;
-		int group = this.group;
-		int PTR = this.PTR;
-		boolean nurture = this.nurture;
-		boolean aseksual = this.aseksual;
-		
-		
-		//or from partner/randomly selected neighbor..
-		if (!ran.nextBoolean()){c = partner.circle();}
-		if (!ran.nextBoolean()){col_r = partner.colRect();}
-		if (!ran.nextBoolean()){col_c = partner.colCircle();}
-		if (!ran.nextBoolean()){group = partner.getGroup();}
-		if (!ran.nextBoolean()){PTR = partner.getPTR();}
-		if (!ran.nextBoolean()){nurture = partner.getNurture();}
-		if (!ran.nextBoolean()){aseksual = partner.getAseksual();}
-		
-		// TODO: random mutations
-
-		Human child = new Human(r, c, col_r, col_c, group, PTR, nurture, aseksual);
-		return child;
+		// human inherits traits randomly from new neighbors
+		if (actualNeighbors.size() > 0){
+			// TODO: alternative for random?
+			this.group = actualNeighbors.get(ran.nextInt(actualNeighbors.size())).getGroup();
+			this.strategyOtherColor = actualNeighbors.get(ran.nextInt(actualNeighbors.size())).strategyOtherColor;
+			this.strategyOwnColor = actualNeighbors.get(ran.nextInt(actualNeighbors.size())).strategyOwnColor;
+		}
 	}
 	
 	public void iterate(Human[] neighbors) {
@@ -101,7 +89,7 @@ public class Human {
 	}
 	
 	
-	Human(Rectangle r, Ellipse2D c, Color col_r, Color col_c, int group, int PTR, boolean nurture, boolean aseksual)
+	Human(Rectangle r, Ellipse2D c, Color col_r, Color col_c, int group, int PTR, boolean nurture, boolean gender)
 	{
 		this.alive = true;
 		this.r = r;
@@ -111,7 +99,7 @@ public class Human {
 		this.group = group;
 		this.PTR = PTR;
 		this.nurture = nurture;
-		this.aseksual = aseksual;
+		this.gender = gender;
 		
 		this.helped = new boolean[4];
 		
@@ -120,6 +108,11 @@ public class Human {
 		this.strategyOtherColor = ran.nextBoolean();
 		this.strategyOwnColor = ran.nextBoolean();
 	}
+	
+	public Human mate(Human partner){
+		
+		
+		return null;	}
 
 	Human(Human h, Human old, Config c, Color[] cs)
 	{
@@ -131,7 +124,7 @@ public class Human {
 		this.y = old.y;
 		this.alive = true;
 		this.nurture = h.nurture;
-		this.aseksual = h.aseksual;
+		this.gender = h.gender;
 		this.PTR = h.PTR;
 		this.helped = new boolean[4];
 		
@@ -181,8 +174,8 @@ public class Human {
 		return nurture;
 	}
 	
-	public boolean getAseksual(){
-		return aseksual;
+	public boolean getSekse(){
+		return gender;
 	}
 	
 	public int getPTR()

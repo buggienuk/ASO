@@ -27,7 +27,6 @@ public class World {
 		interaction(); 		// maybe works? have to test
 		reproduction();		// works.
 		death();			// works.
-
 		// this isn't defined in the paper, but this way its easy to change the ptr and interaction flags.
 		resetHumanInfo();	// works
 	}
@@ -51,13 +50,26 @@ public class World {
 			Human emptySpot = findEmptySpotAround(parent.x, parent.y);
 			if(emptySpot == null) { continue; }
 			
+			Human child;
+			if (c.aseksual){
 			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
-			Human child = new Human(parent, emptySpot, c, groupColors);
-			
+				child = parent.breedAseksual(emptySpot, c, groupColors);
+			}else{
+				Human [] neighbors = getNeighbors(parent.x,parent.y);
+				child = emptySpot.breed(neighbors);
+			}
 			// place him on the empty spot location, and we're done, for a single iteration. 
+				// unless the child is nurtured right?
+			if (child.getNurture()){
+				Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
+				child.nurture(newNeighbours);
+			}
 			world[emptySpot.x][emptySpot.y] = child;
-		}
+
+			}
 	}
+	
+	
 
 	// find an empty spot around the human (9 squares)
 	private Human findEmptySpotAround(int x, int y)
@@ -183,8 +195,10 @@ public class World {
 
 		Rectangle r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 		Ellipse2D e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
-
-		world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, c.aseksual);
+		boolean gender = ran.nextBoolean();
+		
+		
+		world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, gender);
 	}
 
 	public void doIteration()
@@ -210,7 +224,6 @@ public class World {
 						neighbors = getNeighbors(i,j);
 						world[i][j].iterate(neighbors);
 						Human child = world[i][j].breed(neighbors);
-						// TODO: what to do with the child?
 
 						findEmptySpot(child);
 
@@ -290,7 +303,7 @@ public class World {
 				if(num < c.percentageFilled)
 				{
 					num = ran.nextInt(c.numGroups);
-					world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, c.aseksual);
+					world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, ran.nextBoolean());
 				} else { // create a dead human
 					world[i][j] = new Human(r, e, groupColors[c.numGroups]);
 				}

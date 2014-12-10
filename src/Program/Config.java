@@ -52,8 +52,10 @@ public class Config {
 		percentageFilled = 1;
 		horNumAgents = 50;
 		verNumAgents = 50;
-		nurture = false;
-		aseksual = false;
+		//TODO: make this depend on a check-box in the UI or something 
+		nurture = true;
+		// PROGRAM FAILS FOR SEKSUAL REPRODUCTION
+		aseksual = true;
 		basePTR = 12;
 		
 		updateEvery = 1;
