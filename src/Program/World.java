@@ -70,7 +70,7 @@ public class World {
 					if(!neighbors[k].alive) { continue; }		
 					
 					//same gender?
-					if(neighbors[k].gender == parent.gender) { continue; }
+					if(neighbors[k].gender != parent.gender) { continue; }
 										
 					// try to find an empty spot.
 					Human emptySpot = findEmptySpotAround(parent.x, parent.y);
