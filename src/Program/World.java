@@ -19,6 +19,8 @@ public class World {
 	static int WEST = 0, NORTH = 1, EAST = 2, SOUTH = 3;
 	Random ran;
 
+	public boolean breeded;
+	
 	
 	// basic model run, aseksual and nurture. 
 	public void iteration()
@@ -47,26 +49,47 @@ public class World {
 			if(chance > parent.PTR){ continue; }
 			
 			// try to find an empty spot.
-			Human emptySpot = findEmptySpotAround(parent.x, parent.y);
-			if(emptySpot == null) { continue; }
+			//Human emptySpot = findEmptySpotAround(parent.x, parent.y);
+			//if(emptySpot == null) { continue; }
 			
 			Human child;
 			if (c.aseksual){
 			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
-				child = parent.breedAseksual(emptySpot, c, groupColors);
+				//child = parent.breedAseksual(emptySpot, c, groupColors);
 			}else{
 				Human [] neighbors = getNeighbors(parent.x,parent.y);
-				child = emptySpot.breed(neighbors);
-			}
-			// place him on the empty spot location, and we're done, for a single iteration. 
-				// unless the child is nurtured right?
-			if (child.getNurture()){
-				Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
-				child.nurture(newNeighbours);
-			}
-			world[emptySpot.x][emptySpot.y] = child;
+				//child = emptySpot.breed(neighbors);
+				
+							
+				//breed with all neighbors??
+				
+				
+				for(int k = 0; k < 4; k++)
+				{
+					// the neighbor on that side is dead.
+					if(!neighbors[k].alive) { continue; }		
+					
+					//same gender?
+					if(neighbors[k].gender == parent.gender) { continue; }
+										
+					// try to find an empty spot.
+					Human emptySpot = findEmptySpotAround(parent.x, parent.y);
+					if(emptySpot == null) { continue; }
 
+					child = parent.breedAseksual(emptySpot, c, groupColors);
+					
+					// place him on the empty spot location, and we're done, for a single iteration. 
+					// unless the child is nurtured right?
+					if (child.getNurture()){
+						Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
+						child.nurture(newNeighbours);
+						
+					}
+					world[emptySpot.x][emptySpot.y] = child;
+					
+				}
 			}
+		}
 	}
 	
 	

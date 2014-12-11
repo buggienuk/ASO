@@ -55,7 +55,7 @@ public class Config {
 		//TODO: make this depend on a check-box in the UI or something 
 		nurture = true;
 		// PROGRAM FAILS FOR SEKSUAL REPRODUCTION
-		aseksual = true;
+		aseksual = false;
 		basePTR = 12;
 		
 		updateEvery = 1;
