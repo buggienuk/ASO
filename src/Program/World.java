@@ -18,6 +18,10 @@ public class World {
 	public boolean step;
 	static int WEST = 0, NORTH = 1, EAST = 2, SOUTH = 3;
 	Random ran;
+	int ethnocentricBehaviour;
+	int prev_ethnocentricBehaviour;
+	int otherBehaviour;
+	int prev_otherBehaviour;
 
 	public boolean breeded;
 	
@@ -26,17 +30,59 @@ public class World {
 	public void iteration()
 	{
 		immigration();		// works.
-		interaction(); 		// maybe works? have to test
-		reproduction();		// works.
+		interaction(); 		// works
+		if(c.aseksual)
+		{
+			reproduction_aseksual();		// works.
+		} else {
+			reproduction_seksual();
+		}
 		death();			// works.
+		
+		prev_ethnocentricBehaviour = ethnocentricBehaviour;
+		prev_otherBehaviour = otherBehaviour;
+		
 		// this isn't defined in the paper, but this way its easy to change the ptr and interaction flags.
 		resetHumanInfo();	// works
 	}
 
+	
+	// TODO:
+	/**
+	 *  generate a 'random' world with groups of agents together
+	 */
 
-
-
-	private void reproduction()
+	
+	// TODO:
+	/**
+	 * voor nurture, child word ergens willekeurig op t bord gespawnd.
+	 */
+	
+	private void reproduction_aseksual()
+	{
+		ArrayList<Human> aliveHumans = getAliveHumans();
+		int chance;
+		for(int i = 0; i < aliveHumans.size(); i++)
+		{
+			chance = ran.nextInt(100);
+			Human parent = aliveHumans.get(i);
+			
+			// are we having a baby??
+			if(chance > parent.PTR){ continue; }
+			
+			// try to find an empty spot.
+			Human emptySpot = findEmptySpotAround(parent.x, parent.y);
+			if(emptySpot == null) { continue; }
+			
+			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
+			Human child = new Human(parent, emptySpot, c, groupColors);
+			
+			// place him on the empty spot location, and we're done, for a single iteration. 
+			world[emptySpot.x][emptySpot.y] = child;
+		} 
+	}
+	
+	private void reproduction_seksual()
 	{
 		ArrayList<Human> aliveHumans = getAliveHumans();
 		int chance;
@@ -53,49 +99,67 @@ public class World {
 			//if(emptySpot == null) { continue; }
 			
 			Human child;
-			if (c.aseksual){
-			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
-				//child = parent.breedAseksual(emptySpot, c, groupColors);
-			}else{
-				Human [] neighbors = getNeighbors(parent.x,parent.y);
-				//child = emptySpot.breed(neighbors);
-				
-							
-				//breed with all neighbors??
-				
-				
-				for(int k = 0; k < 4; k++)
-				{
-					// the neighbor on that side is dead.
-					if(!neighbors[k].alive) { continue; }		
-					
-					//same gender?
-					if(neighbors[k].gender != parent.gender) { continue; }
-										
-					// try to find an empty spot.
-					Human emptySpot = findEmptySpotAround(parent.x, parent.y);
-					if(emptySpot == null) { continue; }
+			
+			Human [] neighbors = getNeighbors(parent.x,parent.y);
+			//child = emptySpot.breed(neighbors);
 
-					child = parent.breedAseksual(emptySpot, c, groupColors);
-					
-					// place him on the empty spot location, and we're done, for a single iteration. 
-					// unless the child is nurtured right?
-					if (child.getNurture()){
-						Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
-						child.nurture(newNeighbours);
-						
-					}
-					world[emptySpot.x][emptySpot.y] = child;
-					
+
+			//breed with all neighbors??
+
+			int start = ran.nextInt(4);
+			for(int k = 0; k < 4; k++)
+			{
+				// the neighbor on that side is dead.
+				if(!neighbors[start].alive) { start = (start+1) % 4; continue; }		
+
+				//same gender?
+				if(neighbors[start].gender == parent.gender) { start = (start+1) % 4; continue; }
+
+				// try to find an empty spot.
+				Human emptySpot = findEmptySpotAround(parent.x, parent.y);
+				if(emptySpot == null) { continue; }
+
+				child = parent.breedAseksual(emptySpot, c, groupColors);
+				
+				// place him on the empty spot location, and we're done, for a single iteration. 
+				// unless the child is nurtured right?
+				if (child.getNurture()){
+					Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
+					child.nurture(newNeighbours);
 				}
+				world[emptySpot.x][emptySpot.y] = child;
+				break;
 			}
 		}
+		
 	}
-	
-	
 
 	// find an empty spot around the human (9 squares)
 	private Human findEmptySpotAround(int x, int y)
+	{
+		return findEmpty_4(x,y);
+		//return findEmpty_9(x,y);
+		
+		
+		
+	}
+	
+	private Human findEmpty_4(int x, int y)
+	{
+		Human[] spaces = getNeighbors(x,y);
+		int start = ran.nextInt(spaces.length);
+		
+		for(int i = 0; i < spaces.length; i++)
+		{
+			if(spaces[start].alive) { start = (start+1)%spaces.length; continue; }
+			
+			return spaces[start];
+		}
+		
+		return null;
+	}
+	
+	private Human findEmpty_9(int x, int y)
 	{
 		int start_x = ran.nextInt(3) -1;
 		int start_y = ran.nextInt(3) -1;
@@ -140,11 +204,7 @@ public class World {
 					// this neighbor has already helped us, so no need to help him
 					if(neighbors[k].helped[(k+2) % 4]) { continue; }
 
-					// do the iterated prisoners dillema thingie. 
-					// HOW DO I DO THIS?
-					/**
-					 * blue placeholder for todo-ness
-					 */
+					// actually perform the dilemma
 					performDilemma(world[i][j], neighbors[k]);
 				}
 			}
@@ -163,9 +223,11 @@ public class World {
 		if(h1.strategyOwnColor && sameGroup)
 		{
 			h1_to_h2_action = true;
+			ethnocentricBehaviour++;
 		// else, are we a cheater and help other groups? yes, help him 
 		} else if(h1.strategyOtherColor && !sameGroup)
 		{
+			otherBehaviour++;
 			h1_to_h2_action = true;
 		// none of the above cases hold, we will not help him.
 		} else {
@@ -176,8 +238,10 @@ public class World {
 		if(h2.strategyOwnColor && sameGroup)
 		{
 			h2_to_h1_action = true; 
+			ethnocentricBehaviour++;
 		} else if(h2.strategyOtherColor && !sameGroup)
 		{
+			otherBehaviour++;
 			h2_to_h1_action = true;
 		} else {
 			h2_to_h1_action = false;
@@ -264,7 +328,6 @@ public class World {
 		result[NORTH] = getNeighbor(x,y-1);
 		result[SOUTH] = getNeighbor(x+1,y);
 		result[WEST] = getNeighbor(x,y+1);
-
 		// TODO: remove out of bounds neighbors
 		return result;
 	}
@@ -288,11 +351,15 @@ public class World {
 			y = c.verNumAgents -1;
 		}
 
+		world[x][y].x = x;
+		world[x][y].y = y;
 		return world[x][y];
 	}
 
 	World(Config c)
 	{
+		ethnocentricBehaviour = 0;
+		otherBehaviour = 0;
 		this.c = c; 
 		initColors(c.numGroups);
 		initWorld(c);
@@ -307,31 +374,7 @@ public class World {
 		world = new Human[c.horNumAgents][c.verNumAgents];
 		Random ran = new Random();
 
-		int num;
-		Rectangle r;
-		Ellipse2D e;
-		for(int i = 0; i < c.horNumAgents; i++)
-		{
-			for(int j = 0; j < c.verNumAgents; j++)
-			{
-				num = ran.nextInt(100);
-
-				// create a rectangle and set its x and y location, as well as its size.
-				r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-				e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
-
-				/**
-				 *  create an alive human
-				 */
-				if(num < c.percentageFilled)
-				{
-					num = ran.nextInt(c.numGroups);
-					world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, ran.nextBoolean());
-				} else { // create a dead human
-					world[i][j] = new Human(r, e, groupColors[c.numGroups]);
-				}
-			}
-		}
+		generateNew();
 	}
 
 
@@ -342,8 +385,7 @@ public class World {
 
 
 	/**
-	 * Kinderen moeten geplaatst worden naast de ouders, niet op een willekeurige plek.
-	 * @param child2
+	 *  zoek een random plek voor het kind (nurture!!)
 	 */
 	public void findEmptySpot(Human child2)
 	{
@@ -382,6 +424,8 @@ public class World {
 
 	private void resetHumanInfo()
 	{
+		ethnocentricBehaviour = 0;
+		otherBehaviour = 0;
 		ArrayList<Human> aliveHumans = getAliveHumans();
 		for(int i = 0; i < aliveHumans.size(); i++)
 		{
@@ -437,24 +481,115 @@ public class World {
 	
 	public void generateNew()
     {
-    	int num; 
-    	Random ran = new Random();
-        for(int i = 0; i < c.horNumAgents; i++)
-    	{
-    		for(int j = 0; j < c.verNumAgents; j++)
-    		{
-    			num = ran.nextInt(4);
-        		Rectangle r = new Rectangle(i*10, j*10, 10, 10);
-        		Ellipse2D e = new Ellipse2D.Double(i*10+1, j*10+1, 8, 8);
-        		
-        		if(num == 0)
-        		{
-        			num = ran.nextInt(4);
-	        		world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, 13, false, false);
-        		} else {
-        			world[i][j] = new Human(r, e, groupColors[c.numGroups]);
-        		}
-    		}
-    	}
+		if(c.nurture) { generateWithClusters(); }
+		else { generateWithoutClusters(); }
     }
+	
+	public void generateWithoutClusters()
+	{
+		ran = new Random();
+
+		int num;
+		Rectangle r;
+		Ellipse2D e;
+		for(int i = 0; i < c.horNumAgents; i++)
+		{
+			for(int j = 0; j < c.verNumAgents; j++)
+			{
+				num = ran.nextInt(100);
+
+				// create a rectangle and set its x and y location, as well as its size.
+				r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+				e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
+
+				if(num < c.percentageFilled)
+				{
+					num = ran.nextInt(c.numGroups);
+					world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, ran.nextBoolean());
+				} else { // create a dead human
+					world[i][j] = new Human(r, e, groupColors[c.numGroups]);
+				}
+			}
+		}
+	}
+	
+	public void generateWithClusters()
+	{
+		int num;
+		ran = new Random();
+		Rectangle r;
+		Ellipse2D e;
+		for(int i = 0; i < c.horNumAgents; i++)
+		{
+			for(int j = 0; j < c.verNumAgents; j++)
+			{
+				num = ran.nextInt(100);
+
+				// create a rectangle and set its x and y location, as well as its size.
+				r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+				e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
+
+			
+				world[i][j] = new Human(r, e, groupColors[c.numGroups]);
+			}
+		}
+		
+		int x,y;
+		int times;
+		int numClusters = (int) ((c.verNumAgents * c.horNumAgents) * (c.percentageFilled/100.0))/c.averageClusterSize;
+		System.out.println(numClusters);
+		for(int i = 0; i < numClusters; i++)
+		{
+			x = ran.nextInt(c.horNumAgents);
+			y = ran.nextInt(c.verNumAgents);
+			
+			num = ran.nextInt(4);
+			times = ran.nextInt(3) -1;
+			// start mannetje van het cluster
+    		world[x][y] = new Human(world[x][y].r, world[x][y].c, groupColors[num], groupColors[(num+1) % c.numGroups], num, 13, false, false);
+    		for(int j = 0; j < c.averageClusterSize + times; j++)
+    		{
+    			Human spot = findEmptySpotAround(x,y);
+    			if(spot != null)
+    			{
+    				num = ran.nextInt(4);
+    				world[spot.x][spot.y] = new Human(world[spot.x][spot.y].r, world[spot.x][spot.y].c, groupColors[num], groupColors[(num+1) % c.numGroups], num, 13, false, false);
+    			}
+    		}
+		}
+	}
+	
+	public String generateAgentData()
+	{
+		String result = "";
+		// total_num_agents, ethnocentric_behaviour_actions, cooperative_behaviour_actions, number_of_groups, num_agents_in_group_0, ... num_agents_in_group_n, num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false
+		ArrayList<Human> humans = getAliveHumans();
+		result += ", " + Integer.toString(humans.size());
+		result += ", " + Integer.toString(prev_ethnocentricBehaviour);
+		result += ", " + Integer.toString(prev_otherBehaviour);
+		result += ", " + Integer.toString(c.numGroups);
+
+		int[] numAgents = new int[c.numGroups];
+		int ethno = 0, other = 0; 
+		for(int i = 0; i < humans.size(); i++)
+		{
+			numAgents[humans.get(i).group]++;
+			ethno = humans.get(i).strategyOwnColor ? ethno + 1: ethno;
+			other = humans.get(i).strategyOtherColor ? other + 1: other;
+		}
+		
+		for(int i = 0; i < c.numGroups; i++)
+		{
+			result += ", " + Integer.toString(numAgents[i]);
+		}
+		
+		// num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false
+		result += ", " + Integer.toString(ethno);
+		result += ", " + Integer.toString(humans.size() - ethno);
+		
+		result += ", " + Integer.toString(other);
+		result += ", " + Integer.toString(humans.size() - other);
+			
+		return result;
+	}
 }

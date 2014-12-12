@@ -112,7 +112,8 @@ public class Human {
 	public Human mate(Human partner){
 		
 		
-		return null;	}
+		return null;	
+	}
 
 	Human(Human h, Human old, Config c, Color[] cs)
 	{

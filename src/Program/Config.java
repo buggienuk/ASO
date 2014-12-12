@@ -23,6 +23,8 @@ public class Config {
 	public int updateEvery;
 	public int sleepTime; // in milliseconds
 	
+	public int averageClusterSize;
+	
 	// use base settings (not recommended)
 	Config()
 	{
@@ -42,6 +44,7 @@ public class Config {
 		c.basePTR = this.basePTR;
 		c.updateEvery = this.updateEvery;
 		c.sleepTime = this.sleepTime;
+		c.averageClusterSize = this.averageClusterSize;
 		
 		return c;
 	}
@@ -49,18 +52,19 @@ public class Config {
 	private void defaultSettings()
 	{
 		numGroups = 4;
-		percentageFilled = 1;
+		percentageFilled = 2;
 		horNumAgents = 50;
 		verNumAgents = 50;
 		//TODO: make this depend on a check-box in the UI or something 
-		nurture = true;
+		nurture = false;
 		// PROGRAM FAILS FOR SEKSUAL REPRODUCTION
-		aseksual = false;
+		aseksual = true;
 		basePTR = 12;
 		
 		updateEvery = 1;
 		sleepTime = 50;
 		deathChance = 10;
+		averageClusterSize = 3;
 	}
 	
 	// read from file
