@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -22,41 +23,48 @@ public class World {
 	int prev_ethnocentricBehaviour;
 	int otherBehaviour;
 	int prev_otherBehaviour;
-
-	public boolean breeded;
+	
+	/**
+	 * constructor, experiment starts paused.
+	 */
+	World(Config c)
+	{
+		this.c = c; 
+		initColors(c.numGroups);
+		initWorld(c);
+		ran = new Random();
+		paused = true;
+	}
 	
 	
-	// basic model run, aseksual and nurture. 
+	/**
+	 * The paper model has four phases, namely:
+	 * 1. immigration		- new agents randomly enter the world
+	 * 2. interaction		- iterate randomly over all agents, performing the prisoners dillema
+	 * 3. reproduction		- reproduce
+	 * 4. death				- every agent has a 10% chance to die
+	 */
 	public void iteration()
 	{
-		immigration();		// works.
-		interaction(); 		// works
+		immigration();		
+		interaction(); 		
+		reproduction();		
+		death();			
+	
+		// this isn't defined in the paper, but this way its easy to change the ptr and interaction flags.
+		resetHumanInfo();	
+	}
+	
+	private void reproduction()
+	{
 		if(c.aseksual)
 		{
-			reproduction_aseksual();		// works.
+			reproduction_aseksual();	
 		} else {
 			reproduction_seksual();
 		}
-		death();			// works.
-		
-		prev_ethnocentricBehaviour = ethnocentricBehaviour;
-		prev_otherBehaviour = otherBehaviour;
-		
-		// this isn't defined in the paper, but this way its easy to change the ptr and interaction flags.
-		resetHumanInfo();	// works
 	}
 
-	
-	// TODO:
-	/**
-	 *  generate a 'random' world with groups of agents together
-	 */
-
-	
-	// TODO:
-	/**
-	 * voor nurture, child word ergens willekeurig op t bord gespawnd.
-	 */
 	
 	private void reproduction_aseksual()
 	{
@@ -71,7 +79,7 @@ public class World {
 			if(chance > parent.PTR){ continue; }
 			
 			// try to find an empty spot.
-			Human emptySpot = findEmptySpotAround(parent.x, parent.y);
+			Human emptySpot = findEmptySpot(parent.x, parent.y);
 			if(emptySpot == null) { continue; }
 			
 			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
@@ -134,14 +142,24 @@ public class World {
 		
 	}
 
-	// find an empty spot around the human (9 squares)
+	
+	private Human findEmptySpot(int x, int y)
+	{
+		// if nurture, spawn the child on a random position
+		if(c.nurture)
+		{
+			return findRandomEmptySpot();
+		} else {
+			return findEmptySpotAround(x,y);
+		}
+		
+	}
+	
+	// find an empty spot around the human (4 squares)
 	private Human findEmptySpotAround(int x, int y)
 	{
 		return findEmpty_4(x,y);
 		//return findEmpty_9(x,y);
-		
-		
-		
 	}
 	
 	private Human findEmpty_4(int x, int y)
@@ -288,50 +306,22 @@ public class World {
 		world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, gender);
 	}
 
-	public void doIteration()
-	{
-		// for each human
-		Human[] neighbors;
-		for(int i = 0; i < c.horNumAgents; i++)
-		{
-			for(int j = 0; i < c.verNumAgents; i++)
-			{
-				if(world[i][j].alive){
-					if(world[i][j].die())
-					{
-						// human has died, update the world accordingly!!
-						Rectangle r = new Rectangle(i*SQUARE_SIZE, j*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-						Ellipse2D e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
-
-						world[i][j] = new Human(r, e, groupColors[c.numGroups]);
-
-
-					} else {
-						// human lives to breed another day.
-						neighbors = getNeighbors(i,j);
-						world[i][j].iterate(neighbors);
-						Human child = world[i][j].breed(neighbors);
-
-						findEmptySpot(child);
-
-					}
-				}
-			}
-		}
-	}
-
 	private Human[] getNeighbors(int x, int y)
 	{
 		// we go in a clock-wise direction in the array, e.g. left, up, right, down neighbors.
+		// we use wrap-around borders.
 		Human[] result = new Human[4];
 		result[EAST] = getNeighbor(x-1,y);
 		result[NORTH] = getNeighbor(x,y-1);
 		result[SOUTH] = getNeighbor(x+1,y);
 		result[WEST] = getNeighbor(x,y+1);
-		// TODO: remove out of bounds neighbors
+
 		return result;
 	}
 
+	/**
+	 * wrap around the borders and return the agent on that field. 
+	 */
 	private Human getNeighbor(int x, int y)
 	{
 		if( x > c.horNumAgents -1)
@@ -356,23 +346,16 @@ public class World {
 		return world[x][y];
 	}
 
-	World(Config c)
-	{
-		ethnocentricBehaviour = 0;
-		otherBehaviour = 0;
-		this.c = c; 
-		initColors(c.numGroups);
-		initWorld(c);
-		ran = new Random();
-		paused = true;
-	}
+	
 
 
 
 	private void initWorld(Config c)
 	{
+		ethnocentricBehaviour = 0;
+		otherBehaviour = 0;
+		
 		world = new Human[c.horNumAgents][c.verNumAgents];
-		Random ran = new Random();
 
 		generateNew();
 	}
@@ -387,7 +370,7 @@ public class World {
 	/**
 	 *  zoek een random plek voor het kind (nurture!!)
 	 */
-	public void findEmptySpot(Human child2)
+	public Human findRandomEmptySpot()
 	{
 		int n;
 		int m;
@@ -399,7 +382,7 @@ public class World {
 			m = rand2.nextInt(c.verNumAgents);
 
 		} while(world[n][m].alive); //c.percentagefilled != 100) 
-		world[n][m] = child2;
+		return world[n][m];
 
 	}
 
@@ -424,6 +407,11 @@ public class World {
 
 	private void resetHumanInfo()
 	{
+		// store the 'old' info
+		prev_ethnocentricBehaviour = ethnocentricBehaviour;
+		prev_otherBehaviour = otherBehaviour;
+		
+		// reset everything else.
 		ethnocentricBehaviour = 0;
 		otherBehaviour = 0;
 		ArrayList<Human> aliveHumans = getAliveHumans();
@@ -557,39 +545,5 @@ public class World {
     			}
     		}
 		}
-	}
-	
-	public String generateAgentData()
-	{
-		String result = "";
-		// total_num_agents, ethnocentric_behaviour_actions, cooperative_behaviour_actions, number_of_groups, num_agents_in_group_0, ... num_agents_in_group_n, num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false
-		ArrayList<Human> humans = getAliveHumans();
-		result += ", " + Integer.toString(humans.size());
-		result += ", " + Integer.toString(prev_ethnocentricBehaviour);
-		result += ", " + Integer.toString(prev_otherBehaviour);
-		result += ", " + Integer.toString(c.numGroups);
-
-		int[] numAgents = new int[c.numGroups];
-		int ethno = 0, other = 0; 
-		for(int i = 0; i < humans.size(); i++)
-		{
-			numAgents[humans.get(i).group]++;
-			ethno = humans.get(i).strategyOwnColor ? ethno + 1: ethno;
-			other = humans.get(i).strategyOtherColor ? other + 1: other;
-		}
-		
-		for(int i = 0; i < c.numGroups; i++)
-		{
-			result += ", " + Integer.toString(numAgents[i]);
-		}
-		
-		// num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false
-		result += ", " + Integer.toString(ethno);
-		result += ", " + Integer.toString(humans.size() - ethno);
-		
-		result += ", " + Integer.toString(other);
-		result += ", " + Integer.toString(humans.size() - other);
-			
-		return result;
 	}
 }
