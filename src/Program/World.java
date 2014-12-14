@@ -30,7 +30,6 @@ public class World {
 	World(Config c)
 	{
 		this.c = c; 
-		initColors(c.numGroups);
 		initWorld(c);
 		ran = new Random();
 		paused = true;
@@ -101,33 +100,26 @@ public class World {
 			
 			// are we having a baby??
 			if(chance > parent.PTR){ continue; }
+						
+			Human[] neighbors = getNeighbors(parent.x,parent.y);
+			Human child = null;
 			
-			// try to find an empty spot.
-			//Human emptySpot = findEmptySpotAround(parent.x, parent.y);
-			//if(emptySpot == null) { continue; }
-			
-			Human child;
-			
-			Human [] neighbors = getNeighbors(parent.x,parent.y);
-			//child = emptySpot.breed(neighbors);
-
-
-			//breed with all neighbors??
-
 			int start = ran.nextInt(4);
 			for(int k = 0; k < 4; k++)
 			{
+				if(child == null) { k = 4; continue; }
 				// the neighbor on that side is dead.
 				if(!neighbors[start].alive) { start = (start+1) % 4; continue; }		
 
-				//same gender?
+				// same gender?
 				if(neighbors[start].gender == parent.gender) { start = (start+1) % 4; continue; }
 
 				// try to find an empty spot.
-				Human emptySpot = findEmptySpotAround(parent.x, parent.y);
+				Human emptySpot = findEmptySpot(parent.x, parent.y);
 				if(emptySpot == null) { continue; }
 
-				child = parent.breedAseksual(emptySpot, c, groupColors);
+				// actually breed the baby.
+				child = parent.breedSeksual(neighbors[start], emptySpot, c, groupColors);
 				
 				// place him on the empty spot location, and we're done, for a single iteration. 
 				// unless the child is nurtured right?
@@ -303,7 +295,7 @@ public class World {
 		boolean gender = ran.nextBoolean();
 		
 		
-		world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, gender);
+		world[i][j] = new Human(r, e, num, c.basePTR, c.nurture, gender);
 	}
 
 	private Human[] getNeighbors(int x, int y)
@@ -400,7 +392,6 @@ public class World {
 			{
 				Human h = aliveHumans.get(i);
 				world[h.x][h.y].alive = false;
-				world[h.x][h.y].col_r = empty;
 			}
 		}
 	}
@@ -451,21 +442,6 @@ public class World {
 	{
 		return paused;
 	}
-
-	private void initColors(int numGroups)
-	{
-		// add 1 for the base color of an empty square.
-		groupColors = new Color[numGroups+1];
-
-		// TODO: Automatiseer deze shit!
-		this.groupColors[0] = new Color(100,100,100);
-		this.groupColors[1] = new Color(255,0,0);
-		this.groupColors[2] = new Color(0,255,0);
-		this.groupColors[3] = new Color(0,0,255);
-		this.groupColors[4] = new Color(255,255,255);
-
-		empty = new Color(255,255,255);
-	}
 	
 	public void generateNew()
     {
@@ -493,9 +469,9 @@ public class World {
 				if(num < c.percentageFilled)
 				{
 					num = ran.nextInt(c.numGroups);
-					world[i][j] = new Human(r, e, groupColors[num], groupColors[(num+1) % c.numGroups], num, c.basePTR, c.nurture, ran.nextBoolean());
+					world[i][j] = new Human(r, e, num, c.basePTR, c.nurture, ran.nextBoolean());
 				} else { // create a dead human
-					world[i][j] = new Human(r, e, groupColors[c.numGroups]);
+					world[i][j] = new Human(r, e);
 				}
 			}
 		}
@@ -518,7 +494,7 @@ public class World {
 				e = new Ellipse2D.Double(i*SQUARE_SIZE +1, j*SQUARE_SIZE +1, SQUARE_SIZE-2, SQUARE_SIZE-2);
 
 			
-				world[i][j] = new Human(r, e, groupColors[c.numGroups]);
+				world[i][j] = new Human(r, e);
 			}
 		}
 		
@@ -534,14 +510,14 @@ public class World {
 			num = ran.nextInt(4);
 			times = ran.nextInt(3) -1;
 			// start mannetje van het cluster
-    		world[x][y] = new Human(world[x][y].r, world[x][y].c, groupColors[num], groupColors[(num+1) % c.numGroups], num, 13, false, false);
+    		world[x][y] = new Human(world[x][y].r, world[x][y].c, num, 13, false, false);
     		for(int j = 0; j < c.averageClusterSize + times; j++)
     		{
     			Human spot = findEmptySpotAround(x,y);
     			if(spot != null)
     			{
     				num = ran.nextInt(4);
-    				world[spot.x][spot.y] = new Human(world[spot.x][spot.y].r, world[spot.x][spot.y].c, groupColors[num], groupColors[(num+1) % c.numGroups], num, 13, false, false);
+    				world[spot.x][spot.y] = new Human(world[spot.x][spot.y].r, world[spot.x][spot.y].c, num, 13, false, false);
     			}
     		}
 		}

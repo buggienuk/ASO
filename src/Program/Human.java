@@ -10,18 +10,15 @@ public class Human {
 	Rectangle r;
 	Ellipse2D c;
 	int x,y;
-	Color col_r, col_c;
-	boolean alive;
+	public boolean alive;
 	boolean nurture;
 	boolean gender;
-	int group;
+	public int group;
 	int PTR;	// in integers, e.g. 13% is value 13.
 	Random ran;
 	boolean[] helped;
-	boolean strategyOwnColor;
-	boolean strategyOtherColor;
-	
-	boolean DEFECT = true, COOPERATE = false;
+	public boolean strategyOwnColor;
+	public boolean strategyOtherColor;
 	
 	public void reset()
 	{
@@ -33,6 +30,30 @@ public class Human {
 	{
 		Human child = new Human(this, emptySpot, c, groupColors);
 		return child;
+	}
+	
+	public Human breedSeksual(Human otherParent, Human spot, Config c, Color[] groupColors)
+	{
+		Human child = new Human();
+		child.r = spot.r;
+		child.c = spot.c;
+		child.x = spot.x;
+		child.y = spot.y;
+		child.alive = true;
+		child.nurture = c.nurture;
+		child.gender = ran.nextBoolean();
+		child.PTR = c.basePTR;
+		
+		boolean takeParent = ran.nextBoolean();
+
+				
+		// todo: group, strategyOwnColor, strategyOtherColor
+		if(c.nurture)
+		{
+			return child;
+		}
+		
+		return null;
 	}
 	
 	public Human breed(Human[] neighbors){
@@ -89,13 +110,11 @@ public class Human {
 	}
 	
 	
-	Human(Rectangle r, Ellipse2D c, Color col_r, Color col_c, int group, int PTR, boolean nurture, boolean gender)
+	Human(Rectangle r, Ellipse2D c, int group, int PTR, boolean nurture, boolean gender)
 	{
 		this.alive = true;
 		this.r = r;
 		this.c = c;
-		this.col_r = col_r;
-		this.col_c = col_c;
 		this.group = group;
 		this.PTR = PTR;
 		this.nurture = nurture;
@@ -135,11 +154,9 @@ public class Human {
 		// mutation
 		if(chance > 5) { 
 			this.group = h.group;	
-			this.col_r = h.col_r;
 		}
 		else {
 			this.group = ran.nextInt(c.numGroups);
-			this.col_r = cs[this.group];
 		} 
 		
 		chance = ran.nextInt(1000);
@@ -161,15 +178,20 @@ public class Human {
 		// copy this shit. aseksual reproduction
 	}
 	
-	Human(Rectangle r, Ellipse2D c, Color col_r)
+	Human(Rectangle r, Ellipse2D c)
 	{
 		this.alive = false;
 		this.r = r;
 		this.c = c;
-		this.col_r = col_r;
 		
 		ran = new Random();
 	}
+	
+	// empty constructor, used for breeding seksually.
+	Human() { 
+		ran = new Random();
+		helped = new boolean[4];
+	} 
 	
 	public boolean getNurture(){
 		return nurture;
@@ -197,19 +219,9 @@ public class Human {
 		return r;
 	}
 	
-	public Color colRect()
-	{
-		return col_r;
-	}
-	
 	public Ellipse2D circle()
 	{
 		return c;
-	}
-	
-	public Color colCircle()
-	{
-		return col_c;
 	}
 	
 	public boolean alive()

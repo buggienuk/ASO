@@ -13,6 +13,7 @@ public class Writer {
 	
 	Writer(Config c) throws FileNotFoundException
 	{
+		this.c = c;
 		createFileAndWriter();
 	}
 	
