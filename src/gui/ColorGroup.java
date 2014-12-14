@@ -43,29 +43,24 @@ public class ColorGroup {
 	
 	public Color get(boolean own, boolean other)
 	{
-		// own & other 	= 175, 250, 175
-		// own 			= 175, 175, 100
-		// other 		= 100, 175, 175
-		// none 		= 100, 100, 100
+		// own & other 	= 255,255,0
+		// own 			= 0,200,200
+		// other 		= 255,0,255
+		// none 		= 0,0,0
 		
-		int r = 100;
-		int g = 100;
-		int b = 100;
+		if(own && other)
+		{
+			return new Color(255,255,0);
+		}
 		if(own)
 		{
-			r += 75;
-			g += 75;
-		} else {
-			g += 75;
+			return new Color(0,200,200);
+		}
+		if(other)
+		{
+			return new Color(255,0,255);
 		}
 		
-		if(other) {
-			g += 75;
-			b += 75;
-		} else {
-			b += 75;
-		}
-		
-		return new Color(r,g,b);
+		return new Color(255,255,255);	
 	} 
 }

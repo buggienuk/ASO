@@ -19,19 +19,7 @@ public class Human {
 	boolean[] helped;
 	public boolean strategyOwnColor;
 	public boolean strategyOtherColor;
-	
-	public void reset()
-	{
-		helped = new boolean[4];
-	}
-	
-	
-	public Human breedAseksual(Human emptySpot, Config c, Color[] groupColors)
-	{
-		Human child = new Human(this, emptySpot, c, groupColors);
-		return child;
-	}
-	
+		
 	public Human breedSeksual(Human otherParent, Human spot, Config c, Color[] groupColors)
 	{
 		Human child = new Human();
@@ -43,27 +31,24 @@ public class Human {
 		child.nurture = c.nurture;
 		child.gender = ran.nextBoolean();
 		child.PTR = c.basePTR;
-		
-		boolean takeParent = ran.nextBoolean();
-
 				
 		// todo: group, strategyOwnColor, strategyOtherColor
 		if(c.nurture)
 		{
 			return child;
 		}
+
+		boolean takeParent = ran.nextBoolean();
+		child.group = takeParent ? this.group : otherParent.group;
+		takeParent = ran.nextBoolean();
+		child.strategyOtherColor = takeParent ? this.strategyOtherColor : otherParent.strategyOtherColor;
+		takeParent = ran.nextBoolean();
+		child.strategyOwnColor = takeParent ? this.strategyOwnColor : otherParent.strategyOwnColor;
 		
-		return null;
-	}
-	
-	public Human breed(Human[] neighbors){
-		int p = ran.nextInt(100);
-		int idx = ran.nextInt(neighbors.length);
-		Human partner = neighbors[idx];
-		//Human child = new Human(r, c, col_r, col_c, group, PTR, nurture, gender);
+		// after getting everything we need, mutate the childs preferences. 
+		child.mutate(c);
 		
-		
-		return null;
+		return child;
 	}
 	
 	public void nurture(Human[] neighbors) {
@@ -82,34 +67,6 @@ public class Human {
 		}
 	}
 	
-	public void iterate(Human[] neighbors) {
-		// talk with neighbors, update temp PTR based accordingly
-		int tempPTR = this.PTR;
-		
-		for (int i=0; i<neighbors.length; i++){
-			//TODO: implements strategies
-			if (this.group != neighbors[i].getGroup()){// humans of dissimilar groups do not cooporate
-
-				tempPTR -= 1;
-				
-			}else{
-				tempPTR += 3;
-			}
-		}
-		
-		// TODO: PTR should get updated at the end of each iteration
-		PTR = tempPTR;
-		// prisoners dilemma the west, north, east and south neighbors. 
-	}
-	
-	public void prisonersDilemma(int neighborLocation, Human neighbor)
-	{
-		helped[(neighborLocation+2) %4] = true; 
-		
-		// do something with the neighbor. 
-	}
-	
-	
 	Human(Rectangle r, Ellipse2D c, int group, int PTR, boolean nurture, boolean gender)
 	{
 		this.alive = true;
@@ -127,11 +84,27 @@ public class Human {
 		this.strategyOtherColor = ran.nextBoolean();
 		this.strategyOwnColor = ran.nextBoolean();
 	}
-	
-	public Human mate(Human partner){
-		
-		
-		return null;	
+
+	private void mutate(Config c)
+	{
+		// there is a 0,5% mutation chance.
+		int chance = ran.nextInt(1000);
+		// mutation
+		if(chance < 5) { 
+			this.group = ran.nextInt(c.numGroups);
+		} 
+
+		chance = ran.nextInt(1000);
+		if(chance < 5)
+		{
+			this.strategyOtherColor = ran.nextBoolean();
+		}
+
+		chance = ran.nextInt(1000);
+		if(chance < 5)
+		{
+			this.strategyOwnColor = ran.nextBoolean();
+		}
 	}
 
 	Human(Human h, Human old, Config c, Color[] cs)
@@ -147,33 +120,14 @@ public class Human {
 		this.gender = h.gender;
 		this.PTR = h.PTR;
 		this.helped = new boolean[4];
+		this.group = h.group;
+		this.strategyOtherColor = h.strategyOtherColor;
+		this.strategyOwnColor = h.strategyOwnColor;
+		
+		mutate(c);
 		
 		
-		// there is a 0,5% mutation chance.
-		int chance = ran.nextInt(1000);
-		// mutation
-		if(chance > 5) { 
-			this.group = h.group;	
-		}
-		else {
-			this.group = ran.nextInt(c.numGroups);
-		} 
 		
-		chance = ran.nextInt(1000);
-		if(chance > 5)
-		{
-			this.strategyOtherColor = h.strategyOtherColor;
-		} else {
-			this.strategyOtherColor = ran.nextBoolean();
-		}
-		
-		chance = ran.nextInt(1000);
-		if(chance > 5)
-		{
-			this.strategyOwnColor = h.strategyOwnColor;
-		} else {
-			this.strategyOwnColor = ran.nextBoolean();
-		}
 		
 		// copy this shit. aseksual reproduction
 	}
@@ -192,25 +146,7 @@ public class Human {
 		ran = new Random();
 		helped = new boolean[4];
 	} 
-	
-	public boolean getNurture(){
-		return nurture;
-	}
-	
-	public boolean getSekse(){
-		return gender;
-	}
-	
-	public int getPTR()
-	{
-		return PTR;
-	}
-	
-	public int getGroup()
-	{
-		return group;
-	}
-	
+		
 	/**
 	 * Below are basic getters, they can be ignored for the most parts when adding to the code.
 	 */
@@ -237,5 +173,22 @@ public class Human {
 		return false;
 	}
 
+	public boolean getNurture(){
+		return nurture;
+	}
+	
+	public boolean getSekse(){
+		return gender;
+	}
+	
+	public int getPTR()
+	{
+		return PTR;
+	}
+	
+	public int getGroup()
+	{
+		return group;
+	}
 	
 }
