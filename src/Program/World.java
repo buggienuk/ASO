@@ -84,8 +84,16 @@ public class World {
 			// we've found an empty spot, LEZGO! MAKE THAT BABY. 
 			Human child = new Human(parent, emptySpot, c, groupColors);
 			
+			// check for nurture stuff. 
+			if (child.getNurture()){
+				Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
+				child.nurture(newNeighbours, c);
+			}
+			
 			// place him on the empty spot location, and we're done, for a single iteration. 
 			world[emptySpot.x][emptySpot.y] = child;
+			
+			
 		} 
 	}
 	
@@ -125,7 +133,7 @@ public class World {
 				// unless the child is nurtured right?
 				if (child.getNurture()){
 					Human[] newNeighbours = getNeighbors(emptySpot.x,emptySpot.y);
-					child.nurture(newNeighbours);
+					child.nurture(newNeighbours, c);
 				}
 				world[emptySpot.x][emptySpot.y] = child;
 				break;
@@ -338,10 +346,6 @@ public class World {
 		return world[x][y];
 	}
 
-	
-
-
-
 	private void initWorld(Config c)
 	{
 		ethnocentricBehaviour = 0;
@@ -351,12 +355,6 @@ public class World {
 
 		generateNew();
 	}
-
-
-
-
-
-
 
 
 	/**
@@ -375,12 +373,11 @@ public class World {
 
 		} while(world[n][m].alive); //c.percentagefilled != 100) 
 		return world[n][m];
-
 	}
 
 
 	// for all humans, there is a 10% chance to die. Simply set the alive flag to false
-	// to make him 'dead' and change his rectangle color. 
+	// to make him 'dead'
 	private void death()
 	{
 		ArrayList<Human> aliveHumans = getAliveHumans();
@@ -413,7 +410,7 @@ public class World {
 		}
 	}
 
-	// returns a random array of humans. Stores the x and y coordinate in the human as we might need that.
+	// returns a shuffled array of all alive humans. Stores the x and y coordinate in the human as we might need that.
 	ArrayList<Human> getAliveHumans()
 	{
 		ArrayList<Human> result = new ArrayList<Human>();

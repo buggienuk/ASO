@@ -51,19 +51,51 @@ public class Human {
 		return child;
 	}
 	
-	public void nurture(Human[] neighbors) {
+	public void nurture(Human[] neighbors, Config c) {
 		ArrayList<Human> actualNeighbors = new ArrayList<Human>();
 		for (int i=0; i<neighbors.length; i++){
 			if (neighbors[i].alive()){
 				actualNeighbors.add(neighbors[i]); 
 			}
 		}
-		// human inherits traits randomly from new neighbors
+		// human gets traits from the environment around him. Take the average of the strategies 
+		// and round it to get the childrens strategy 
 		if (actualNeighbors.size() > 0){
-			// TODO: alternative for random?
-			this.group = actualNeighbors.get(ran.nextInt(actualNeighbors.size())).getGroup();
-			this.strategyOtherColor = actualNeighbors.get(ran.nextInt(actualNeighbors.size())).strategyOtherColor;
-			this.strategyOwnColor = actualNeighbors.get(ran.nextInt(actualNeighbors.size())).strategyOwnColor;
+			int other = 0;
+			int own = 0;
+			int[] group = new int[c.numGroups];
+			for(int i = 0;  i< actualNeighbors.size(); i++)
+			{
+				other = actualNeighbors.get(i).strategyOtherColor ? other + 1 : other;
+				own = actualNeighbors.get(i).strategyOwnColor ? own + 1 : own;
+				group[actualNeighbors.get(i).group]++;	
+			}
+			// average everything out.
+			double averageOther = other / (double) actualNeighbors.size();
+			double averageOwn   = own / (double) actualNeighbors.size();
+			
+			// find the most prevalent group. Start on a random position to allow for 
+			// random outcomes when 2 groups are present with the same amount of agents. 
+			int mostPrevalentGroup = ran.nextInt(c.numGroups);
+			int highestGroupSize = 0;
+			int start = ran.nextInt(c.numGroups);
+			for(int i = 0; i < c.numGroups; i++)
+			{
+				if(group[i] > highestGroupSize)
+				{
+					highestGroupSize = group[(i + start)%c.numGroups];
+					mostPrevalentGroup = (i + start)%c.numGroups;
+				}
+				start++;
+			}
+			
+			this.strategyOtherColor = averageOther > 0.5 ? true : false;
+			this.strategyOwnColor   = averageOwn > 0.5 ? true : false;
+			this.group				= mostPrevalentGroup;
+		} else {
+			this.group = ran.nextInt(c.numGroups);
+			this.strategyOtherColor = ran.nextBoolean();
+			this.strategyOwnColor = ran.nextBoolean();
 		}
 	}
 	
