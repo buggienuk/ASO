@@ -23,6 +23,8 @@ public class World {
 	int prev_ethnocentricBehaviour;
 	int otherBehaviour;
 	int prev_otherBehaviour;
+	int numberOfDilemmas;
+	int prev_numberOfDilemmas;
 	
 	/**
 	 * constructor, experiment starts paused.
@@ -233,6 +235,7 @@ public class World {
 	{
 		boolean h1_to_h2_action; // true = cooperate, false = defect
 		boolean h2_to_h1_action; // true = cooperate, false = defect
+		numberOfDilemmas++;
 		
 		// are they the same group?
 		boolean sameGroup = h1.group == h2.group;
@@ -348,6 +351,7 @@ public class World {
 
 	private void initWorld(Config c)
 	{
+		numberOfDilemmas = 0;
 		ethnocentricBehaviour = 0;
 		otherBehaviour = 0;
 		
@@ -398,10 +402,13 @@ public class World {
 		// store the 'old' info
 		prev_ethnocentricBehaviour = ethnocentricBehaviour;
 		prev_otherBehaviour = otherBehaviour;
+		prev_numberOfDilemmas = numberOfDilemmas;
 		
 		// reset everything else.
 		ethnocentricBehaviour = 0;
 		otherBehaviour = 0;
+		numberOfDilemmas = 0;
+		
 		ArrayList<Human> aliveHumans = getAliveHumans();
 		for(int i = 0; i < aliveHumans.size(); i++)
 		{

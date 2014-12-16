@@ -21,7 +21,7 @@ public class Writer {
 	{
 		// we will create a csv file, the format will be:
 		// current_iteration, total_num_agents, ethnocentric_behaviour_actions, cooperative_behaviour_actions, number_of_groups, num_agents_in_group_0, ... num_agents_in_group_n, num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false
-		String headers = "current_iteration, total_num_agents, ethnocentric_behaviour_actions, cooperative_behaviour_actions, number_of_groups";
+		String headers = "current_iteration, total_num_agents, ethnocentric_behaviour_actions, cooperative_behaviour_actions, total_number_of_actions, number_of_groups";
 		for(int i = 0; i < c.numGroups; i++)
 		{
 			headers += ", num_agents_in_group_" + Integer.toString(i);
@@ -71,6 +71,7 @@ public class Writer {
 		result += ", " + Integer.toString(humans.size());
 		result += ", " + Integer.toString(w.prev_ethnocentricBehaviour);
 		result += ", " + Integer.toString(w.prev_otherBehaviour);
+		result += ", " + Integer.toString(w.prev_numberOfDilemmas);
 		result += ", " + Integer.toString(c.numGroups);
 
 		int[] numAgents = new int[c.numGroups];
