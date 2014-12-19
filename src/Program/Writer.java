@@ -26,7 +26,7 @@ public class Writer {
 		{
 			headers += ", num_agents_in_group_" + Integer.toString(i);
 		}
-		headers += ", num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false\n";
+		headers += ", num_agents_ethno_true, num_agents_ethno_false, num_agents_other_true, num_agents_other_false, cooperativeActions\n";
 		writer.write(headers);
 		writer.flush();
 	}
@@ -94,6 +94,7 @@ public class Writer {
 		
 		result += ", " + Integer.toString(other);
 		result += ", " + Integer.toString(humans.size() - other);
+		result += ", " + Integer.toString(w.prev_coopActions);
 			
 		return result;
 	}

@@ -25,6 +25,8 @@ public class World {
 	int prev_otherBehaviour;
 	int numberOfDilemmas;
 	int prev_numberOfDilemmas;
+	int coopActions;
+	int prev_coopActions;
 	
 	/**
 	 * constructor, experiment starts paused.
@@ -268,6 +270,10 @@ public class World {
 			h2_to_h1_action = false;
 		}
 		
+		if(h1_to_h2_action && h2_to_h1_action)
+		{
+			coopActions++;
+		}
 		
 		// now update the PTR states:
 		
@@ -354,6 +360,7 @@ public class World {
 		numberOfDilemmas = 0;
 		ethnocentricBehaviour = 0;
 		otherBehaviour = 0;
+		coopActions = 0;
 		
 		world = new Human[c.horNumAgents][c.verNumAgents];
 
@@ -403,11 +410,13 @@ public class World {
 		prev_ethnocentricBehaviour = ethnocentricBehaviour;
 		prev_otherBehaviour = otherBehaviour;
 		prev_numberOfDilemmas = numberOfDilemmas;
+		prev_coopActions = coopActions;
 		
 		// reset everything else.
 		ethnocentricBehaviour = 0;
 		otherBehaviour = 0;
 		numberOfDilemmas = 0;
+		coopActions = 0;
 		
 		ArrayList<Human> aliveHumans = getAliveHumans();
 		for(int i = 0; i < aliveHumans.size(); i++)
