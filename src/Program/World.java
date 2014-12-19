@@ -235,7 +235,7 @@ public class World {
 	{
 		boolean h1_to_h2_action; // true = cooperate, false = defect
 		boolean h2_to_h1_action; // true = cooperate, false = defect
-		numberOfDilemmas++;
+		numberOfDilemmas+=2;
 		
 		// are they the same group?
 		boolean sameGroup = h1.group == h2.group;
