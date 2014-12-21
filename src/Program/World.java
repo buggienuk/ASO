@@ -119,13 +119,14 @@ public class World {
 			int start = ran.nextInt(4);
 			for(int k = 0; k < 4; k++)
 			{
-				if(child == null) { k = 4; continue; }
+				if(child != null) { k = 4; continue; }
+				
 				// the neighbor on that side is dead.
 				if(!neighbors[start].alive) { start = (start+1) % 4; continue; }		
 
 				// same gender?
 				if(neighbors[start].gender == parent.gender) { start = (start+1) % 4; continue; }
-
+				
 				// try to find an empty spot.
 				Human emptySpot = findEmptySpot(parent.x, parent.y);
 				if(emptySpot == null) { continue; }
@@ -163,7 +164,6 @@ public class World {
 	private Human findEmptySpotAround(int x, int y)
 	{
 		return findEmpty_4(x,y);
-		//return findEmpty_9(x,y);
 	}
 	
 	private Human findEmpty_4(int x, int y)
@@ -178,35 +178,6 @@ public class World {
 			return spaces[start];
 		}
 		
-		return null;
-	}
-	
-	private Human findEmpty_9(int x, int y)
-	{
-		int start_x = ran.nextInt(3) -1;
-		int start_y = ran.nextInt(3) -1;
-		int pos_x;
-		int pos_y;
-		for(int i = 0; i < 3; i++)
-		{
-			for(int j = 0; j < 3; j++)
-			{
-				pos_x = (start_x + i) < 2 ? (x + start_x + i) : x-1;
-				pos_y = (start_y + j) < 2 ? (y + start_y + j) : y-1;
-				if(pos_x < 0) { pos_x = c.horNumAgents-1; }
-				else if(pos_x == c.horNumAgents){ pos_x = 0; }
-				
-				if(pos_y < 0) { pos_y = c.verNumAgents-1; }
-				else if(pos_y == c.verNumAgents){ pos_y = 0; }
-				
-				if(!world[pos_x][pos_y].alive())
-				{
-					world[pos_x][pos_y].x = pos_x;
-					world[pos_x][pos_y].y = pos_y;
-					return world[pos_x][pos_y];
-				}
-			}
-		}
 		return null;
 	}
 	
@@ -375,14 +346,19 @@ public class World {
 	{
 		int n;
 		int m;
+		int numTries = 0;
 		Random rand1 = new Random();
 		Random rand2 = new Random();
 		do 
 		{
 			n = rand1.nextInt(c.horNumAgents);
 			m = rand2.nextInt(c.verNumAgents);
-
-		} while(world[n][m].alive); //c.percentagefilled != 100) 
+			numTries++;
+		} while(world[n][m].alive && numTries < 50); //c.percentagefilled != 100)
+		if(numTries == 50)
+		{
+			return null;
+		}
 		return world[n][m];
 	}
 

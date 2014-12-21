@@ -147,6 +147,10 @@ public class Config {
 			this.deathChance = line.nextInt();
 			return;
 		}
+		if(name.equals("clusterSize"))
+		{
+			this.averageClusterSize = line.nextInt();
+		}
 	}
 	
 	
