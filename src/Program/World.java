@@ -14,7 +14,7 @@ public class World {
 	Color[] groupColors;
 	public Color empty;
 	static int SQUARE_SIZE = 10;
-	Config c;
+	public Config c;
 	public boolean paused;
 	public boolean step;
 	static int WEST = 0, NORTH = 1, EAST = 2, SOUTH = 3;

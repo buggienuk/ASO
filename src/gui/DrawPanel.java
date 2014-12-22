@@ -30,9 +30,10 @@ public class DrawPanel extends JPanel{
 	private void drawWorld(Graphics2D g2d, World world) throws Exception
 	{
 		Human h;
-		for(int i = 0; i < 50; i++)
+		
+		for(int i = 0; i < world.c.horNumAgents; i++)
         {
-        	for(int j = 0; j < 50; j++)
+        	for(int j = 0; j < world.c.verNumAgents; j++)
         	{
         		h = world.get(i,j);
         		
