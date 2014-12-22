@@ -52,16 +52,16 @@ public class Config {
 	private void defaultSettings()
 	{
 		numGroups = 4;
-		percentageFilled = 2;
-		horNumAgents = 50;
-		verNumAgents = 50;
+		percentageFilled = 25;
+		horNumAgents = 100;
+		verNumAgents = 100;
 		//TODO: make this depend on a check-box in the UI or something 
-		nurture = false;
+		nurture = true;
 		// PROGRAM FAILS FOR SEKSUAL REPRODUCTION
-		aseksual = true;
+		aseksual = false;
 		basePTR = 12;
 		
-		updateEvery = 1;
+		updateEvery = 100;
 		sleepTime = 50;
 		deathChance = 10;
 		averageClusterSize = 3;

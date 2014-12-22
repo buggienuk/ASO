@@ -251,13 +251,13 @@ public class World {
 		// h1 helps the other, subtract 1% from h1 and add 3% to the h2
 		if(h1_to_h2_action) 
 		{
-			h1.PTR--;
+			h1.PTR --;
 			h2.PTR += 3;
 		}
 		// other way around
 		if(h2_to_h1_action)
 		{
-			h2.PTR--;
+			h2.PTR --;
 			h1.PTR += 3;
 		}
 		
